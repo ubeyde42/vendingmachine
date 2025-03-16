@@ -18,6 +18,7 @@ public class ProductService {
 
     @EventListener
     public void handleProductBoughtEvent(ProductBoughtEvent event) {
+        //when a product sold, its stock quaintity will be updated
         Product product = getProductById(event.getProductId());
         product.setStockQuantity(product.getStockQuantity()-1);
         productRepository.save(product);

@@ -25,19 +25,18 @@ public class MachineStatusCheckAspect {
     // Tüm metotlara uygulanacak, ancak @ExcludeFromMachineCheck anotasyonu olan metotlar hariç tutulacak
     @Before("execution(* com.example.controller.MachineController.*(..))")
     public void checkMachineStatus() throws Throwable {
-        // Current method being executed
         MethodSignature methodSignature = (MethodSignature) org.aspectj.lang.reflect.MethodSignature.class.cast(org.aspectj.lang.JoinPoint.class.cast(this).getSignature());
         Method method = methodSignature.getMethod();
 
-        // Eğer metot @ExcludeFromMachineCheck anotasyonuna sahipse, işlem yapılmaz
+        // No check needed for excluded methods
         if (method.isAnnotationPresent(ExcludeFromMachineCheck.class)) {
-            return; // Hiçbir şey yapma, makine kontrolü yapılmaz
+            return;
         }
 
-        // Makine durumu kontrolü
+        // when machine is not active, operations will be prevented
         Machine machine = machineService.getMachineInfo();
         if (machine == null || machine.getStatus() != MachineStatus.ACTIVE) {
-            throw new MachineNotActiveException("Machine is not active.");
+            throw new MachineNotActiveException("Makine aktif değil.");
         }
     }
 }

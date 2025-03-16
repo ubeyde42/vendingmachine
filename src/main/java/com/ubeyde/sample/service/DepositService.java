@@ -31,6 +31,7 @@ public class DepositService {
 
         depositRepository.save(deposit);
 
+        //deposited money amount converted to TRY currency and event published for listeners
         MoneyDepositedEvent moneyDepositedEvent = new MoneyDepositedEvent(currencyService.convertToTRY(depositRequest.getAmount(), depositRequest.getCurrency()));
         eventPublisher.publishEvent(moneyDepositedEvent);
 

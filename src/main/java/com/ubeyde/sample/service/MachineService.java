@@ -23,6 +23,7 @@ public class MachineService {
 
     @EventListener
     public void handleProductBoughtEvent(ProductBoughtEvent event) {
+        //when a product sold, its price will be deducted from machine balance
         decreaseMachineBalance(event.getAmountPaid());
     }
 
@@ -33,6 +34,7 @@ public class MachineService {
 
     @EventListener
     public void handleRefundRequestedEvent(RefundRequestedEvent event) {
+        //until refund operation finished, machine status will not be active
         updateMachineStatus(MachineStatus.REFUND_PENDING);
     }
 

@@ -23,6 +23,7 @@ public class RefundService {
 
         Random random = new Random();
         boolean refundSuccess = random.nextBoolean();
+        // In real system,an external service implementation will be held here
         //boolean refundSuccess = externalRefundService.processRefund(refundAmount);
 
         if (refundSuccess) {

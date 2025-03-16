@@ -1,5 +1,7 @@
 package com.ubeyde.sample.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -9,6 +11,7 @@ import java.util.Map;
 @Service
 public class CurrencyService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CurrencyService.class);
     private final Map<String, BigDecimal> exchangeRates;
 
     public CurrencyService() {
@@ -25,6 +28,7 @@ public class CurrencyService {
 
         BigDecimal rate = exchangeRates.get(currency.toUpperCase());
         if (rate == null) {
+            logger.warn("Deposited currency rate not found : " + currency);
             throw new IllegalArgumentException("Geçersiz para birimi");
         }
 

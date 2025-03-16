@@ -19,7 +19,6 @@ public class InitialDataLoader implements CommandLineRunner {
 
         if (productRepository.count() == 0) {
 
-            // Ürünleri ekleyelim
             Product water = new Product();
             water.setName("Water");
             water.setPrice(25);

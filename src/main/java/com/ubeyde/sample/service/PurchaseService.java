@@ -9,11 +9,14 @@ import com.ubeyde.sample.exception.InsufficientBalanceException;
 import com.ubeyde.sample.exception.ProductNotFoundException;
 import com.ubeyde.sample.repository.PurchaseRepository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PurchaseService {
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(PurchaseService.class);
     private final ProductService productService;
     private final PurchaseRepository purchaseRepository;
     private final MachineService machineService;
@@ -42,6 +45,9 @@ public class PurchaseService {
         }
 
         try {
+            /*
+            purchase record will be saved and related event published for listeners
+             */
             Purchase purchase = Purchase.builder()
                     .product(product)
                     .amount(price)
@@ -52,6 +58,8 @@ public class PurchaseService {
                     product.getId(),
                     price
             )));
+
+            logger.info("A purchase operation completed. Product: " + product.getName() + " price : "+ price);
 
             return savedPurchase;
 

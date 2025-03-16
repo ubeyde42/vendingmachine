@@ -20,7 +20,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // CSRF'yi devre dışı bırakıyoruz
+
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
@@ -30,9 +30,9 @@ public class SecurityConfig {
                                 .requestMatchers("/machine/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/v2/api-docs/**").permitAll()  // Swagger endpoint'leri
                                 .requestMatchers("/admin/**").authenticated()
-                                .anyRequest().denyAll() );// Diğer tüm endpointlere izin verilmez
+                                .anyRequest().denyAll() );
 
-        // JWT Authentication Filter'ı ekliyoruz
+
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
