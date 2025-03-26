@@ -1,6 +1,7 @@
 package com.ubeyde.sample.service;
 
 import com.ubeyde.sample.entity.Machine;
+import com.ubeyde.sample.entity.Product;
 import com.ubeyde.sample.enums.MachineStatus;
 import com.ubeyde.sample.event.*;
 import com.ubeyde.sample.repository.MachineRepository;
@@ -8,6 +9,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class MachineService {
@@ -96,6 +98,11 @@ public class MachineService {
                 price
         )));
 
+    }
+
+    public List<Product> getAllProducts() {
+        Machine machine = getMachineInfo();
+        return machine.getProducts();
     }
 }
 
