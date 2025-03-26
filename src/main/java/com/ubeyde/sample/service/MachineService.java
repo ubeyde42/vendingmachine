@@ -86,5 +86,12 @@ public class MachineService {
 
         machineRepository.save(machine);
     }
+
+    public void purchaseProduct(Long productId) {
+        Machine machine = getMachineInfo();
+        machine.purchaseProduct(productId);
+        machineRepository.save(machine);
+
+    }
 }
 
