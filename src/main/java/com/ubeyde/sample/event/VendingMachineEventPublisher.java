@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
     }
 
     public void publishEvent(Object event) {
+            System.out.println("Event publishing: " + event);
             eventPublisher.publishEvent(event);
         }
     }

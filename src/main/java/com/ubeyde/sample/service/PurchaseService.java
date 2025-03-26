@@ -40,8 +40,8 @@ public class PurchaseService {
         }
 
         Integer price = product.getPrice();
-        if (currentMachineBalance.compareTo(price) < 0) {
-           throw new InsufficientBalanceException("Ödeme yetersiz.");
+        if (currentMachineBalance-price < 0) {
+           throw new InsufficientBalanceException(Math.abs(currentMachineBalance-price));
         }
 
         try {

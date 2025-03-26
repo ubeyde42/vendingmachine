@@ -2,10 +2,8 @@ package com.ubeyde.sample.service;
 
 import com.ubeyde.sample.dto.ProductSaveRequest;
 import com.ubeyde.sample.entity.Product;
-import com.ubeyde.sample.event.ProductBoughtEvent;
 import com.ubeyde.sample.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,14 +13,6 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
-
-    @EventListener
-    public void handleProductBoughtEvent(ProductBoughtEvent event) {
-        //when a product sold, its stock quaintity will be updated
-        Product product = getProductById(event.getProductId());
-        product.setStockQuantity(product.getStockQuantity()-1);
-        productRepository.save(product);
-    }
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();

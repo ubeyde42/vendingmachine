@@ -2,10 +2,7 @@ package com.ubeyde.sample.service;
 
 import com.ubeyde.sample.entity.Machine;
 import com.ubeyde.sample.enums.MachineStatus;
-import com.ubeyde.sample.event.MoneyDepositedEvent;
-import com.ubeyde.sample.event.ProductBoughtEvent;
-import com.ubeyde.sample.event.RefundRequestedEvent;
-import com.ubeyde.sample.event.RefundSuccessEvent;
+import com.ubeyde.sample.event.*;
 import com.ubeyde.sample.repository.MachineRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -16,15 +13,11 @@ import java.util.Date;
 public class MachineService {
 
     private final MachineRepository machineRepository;
+    private final VendingMachineEventPublisher eventPublisher;
 
-    public MachineService(MachineRepository machineRepository) {
+    public MachineService(MachineRepository machineRepository, VendingMachineEventPublisher eventPublisher) {
         this.machineRepository = machineRepository;
-    }
-
-    @EventListener
-    public void handleProductBoughtEvent(ProductBoughtEvent event) {
-        //when a product sold, its price will be deducted from machine balance
-        decreaseMachineBalance(event.getAmountPaid());
+        this.eventPublisher = eventPublisher;
     }
 
     @EventListener
@@ -85,6 +78,18 @@ public class MachineService {
         machine.setLastUpdated(new Date());
 
         machineRepository.save(machine);
+    }
+
+    public void purchaseProduct(Long productId) {
+        Machine machine = getMachineInfo();
+        Integer price = machine.purchaseProduct(productId);
+        machineRepository.save(machine);
+
+        eventPublisher.publishEvent((new ProductBoughtEvent(
+                productId,
+                price
+        )));
+
     }
 }
 

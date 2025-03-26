@@ -5,7 +5,6 @@ import com.ubeyde.sample.dto.DepositRequest;
 import com.ubeyde.sample.entity.Deposit;
 import com.ubeyde.sample.entity.Machine;
 import com.ubeyde.sample.entity.Product;
-import com.ubeyde.sample.entity.Purchase;
 import com.ubeyde.sample.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,8 +44,9 @@ class MachineController {
     @PostMapping("/purchase/{productId}")
     @Operation(summary = "Purchase Product", description = "Purchase product with product ID")
     public ResponseEntity<?> purchaseProduct(@PathVariable Long productId) {
-        Purchase purchase = transactionService.processTransaction(productId);
-        return ResponseEntity.ok(purchase);
+        //Purchase purchase = transactionService.processTransaction(productId);
+        machineService.purchaseProduct(productId);
+        return ResponseEntity.ok("purchased");
     }
 
     @PostMapping("/deposit")
