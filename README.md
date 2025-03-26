@@ -4,7 +4,7 @@ Bu proje, **Vending Machine** (Satış Makinesi) sistemini modellemek için bir 
 
 ## Özellikler
 
-- **Makine İşlemleri**
+- **Makine İşlemleri****
   - Makineye para yatırma
   - Ürün satın alma
   - Makine bakiyesini görüntüleme
