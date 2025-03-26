@@ -22,13 +22,11 @@ import java.util.Map;
 class MachineController {
 
     private final MachineService machineService;
-    private final ProductService productService;
     private final DepositService depositService;
     private final RefundService refundService;
 
-    public MachineController(MachineService machineService, ProductService productService, DepositService depositService, RefundService refundService) {
+    public MachineController(MachineService machineService, DepositService depositService, RefundService refundService) {
         this.machineService = machineService;
-        this.productService = productService;
         this.depositService = depositService;
         this.refundService = refundService;
     }

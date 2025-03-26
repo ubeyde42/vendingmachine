@@ -1,5 +1,6 @@
 package com.ubeyde.sample.service;
 
+import com.ubeyde.sample.dto.ProductSaveRequest;
 import com.ubeyde.sample.entity.Machine;
 import com.ubeyde.sample.entity.Product;
 import com.ubeyde.sample.enums.MachineStatus;
@@ -53,14 +54,33 @@ public class MachineService {
         return machineRepository.save(machine);
     }
 
+    public List<Product> getAllProducts() {
+        Machine machine = getMachineInfo();
+        return machine.getProducts();
+    }
+
+    public void addNewProduct(ProductSaveRequest product) {
+        Machine machine = getMachineInfo();
+        machine.addNewProduct(product);
+        machineRepository.save(machine);
+    }
+
+    public void updateProduct(Long productId, ProductSaveRequest productSaveRequest) {
+        Machine machine = getMachineInfo();
+        machine.updateProduct(productId,productSaveRequest);
+        machineRepository.save(machine);
+    }
+
+    public void deleteProduct(Long productId) {
+        Machine machine = getMachineInfo();
+        machine.deleteProduct(productId);
+        machineRepository.save(machine);
+    }
+
     public Machine getMachineInfo() {
         return machineRepository.findById(1L).orElse(new Machine());
     }
 
-    public Integer getMachineBalance() {
-        Machine machineInfo = machineRepository.findById(1L).orElse(new Machine());
-        return machineInfo.getBalanceTRY();
-    }
 
     public void increaseMachineBalance(Integer amount) {
         Machine machineInfo = getMachineInfo();
@@ -100,9 +120,6 @@ public class MachineService {
 
     }
 
-    public List<Product> getAllProducts() {
-        Machine machine = getMachineInfo();
-        return machine.getProducts();
-    }
+
 }
 

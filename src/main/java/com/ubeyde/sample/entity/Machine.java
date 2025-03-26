@@ -1,5 +1,6 @@
 package com.ubeyde.sample.entity;
 
+import com.ubeyde.sample.dto.ProductSaveRequest;
 import com.ubeyde.sample.enums.MachineStatus;
 import com.ubeyde.sample.exception.InsufficientBalanceException;
 import com.ubeyde.sample.exception.ProductNotFoundException;
@@ -67,5 +68,43 @@ public class Machine {
 
         return product.getPrice();
 
+    }
+
+    public void addNewProduct(ProductSaveRequest newProductDto) {
+        if (products.stream().filter(p -> p.getName().equals(newProductDto.getName())).count() == 1) {
+            throw new IllegalArgumentException("Aynı isimle bir ürün zaten var.");
+        }
+
+        Product newProduct = new Product();
+        newProduct.setName(newProductDto.getName());
+        newProduct.setPrice(newProductDto.getPrice());
+        newProduct.setStockQuantity(newProductDto.getStockQuantity());
+
+        products.add(newProduct);
+    }
+
+
+    public void updateProduct(Long productId, ProductSaveRequest updatedProductDto) {
+        Product existingProduct = products.stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ürün bulunamadı."));
+
+        if (products.stream().filter(p -> p.getName().equals(updatedProductDto.getName()) && !p.getId().equals(productId)).count() == 1) {
+            throw new IllegalArgumentException("Aynı isimle bir ürün zaten var.");
+        }
+
+        existingProduct.setName(updatedProductDto.getName());
+        existingProduct.setPrice(updatedProductDto.getPrice());
+        existingProduct.setStockQuantity(updatedProductDto.getStockQuantity());
+    }
+
+    public void deleteProduct(Long productId) {
+        Product productToDelete = products.stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ürün bulunamadı."));
+
+        products.remove(productToDelete);
     }
 }
