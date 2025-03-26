@@ -20,13 +20,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InsufficientBalanceException.class)
-    public ResponseEntity<String> handleNotFoundProduct(InsufficientBalanceException ex) {
+    public ResponseEntity<String> handleInsufficientBalance(InsufficientBalanceException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MachineNotActiveException.class)
-    public ResponseEntity<String> handleMachineNotActiveException(MachineNotActiveException ex) {
-        return ResponseEntity.status(403).body(ex.getMessage()); // 403 Forbidden
+    public ResponseEntity<String> handleMachineNotActive(MachineNotActiveException ex) {
+        return ResponseEntity.status(403).body(ex.getMessage());
     }
 
 }

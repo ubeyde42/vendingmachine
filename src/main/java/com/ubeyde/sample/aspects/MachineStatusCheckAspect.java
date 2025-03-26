@@ -5,6 +5,7 @@ import com.ubeyde.sample.entity.Machine;
 import com.ubeyde.sample.enums.MachineStatus;
 import com.ubeyde.sample.exception.MachineNotActiveException;
 import com.ubeyde.sample.service.MachineService;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -22,10 +23,11 @@ public class MachineStatusCheckAspect {
         this.machineService = machineService;
     }
 
-    // Tüm metotlara uygulanacak, ancak @ExcludeFromMachineCheck anotasyonu olan metotlar hariç tutulacak
-    @Before("execution(* com.example.controller.MachineController.*(..))")
-    public void checkMachineStatus() throws Throwable {
-        MethodSignature methodSignature = (MethodSignature) org.aspectj.lang.reflect.MethodSignature.class.cast(org.aspectj.lang.JoinPoint.class.cast(this).getSignature());
+    // All methods except @ExcludeFromMachineCheck annotations
+    @Before("execution(* com.ubeyde.sample.controller.MachineController.*(..))")
+    public void checkMachineStatus(JoinPoint joinPoint) throws Throwable {
+        // Get the method being called
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
         // No check needed for excluded methods
