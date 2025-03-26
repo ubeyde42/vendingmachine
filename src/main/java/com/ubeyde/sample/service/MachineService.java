@@ -37,6 +37,12 @@ public class MachineService {
         resetMachineBalance();
     }
 
+    @EventListener
+    public void handlePurchaseNotifyPeriodReachedEvent(PurchaseNotifyPeriodReachedEvent event) {
+        //if period reached, machine will be closed
+        updateMachineStatus(MachineStatus.MAINTENANCE);
+    }
+
     public Machine updateMachineInfo(MachineStatus status) {
         Machine machine = getMachineInfo();
         machine.setStatus(status);

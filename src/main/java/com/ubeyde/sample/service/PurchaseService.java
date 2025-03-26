@@ -4,19 +4,23 @@ package com.ubeyde.sample.service;
 import com.ubeyde.sample.entity.Product;
 import com.ubeyde.sample.entity.Purchase;
 import com.ubeyde.sample.event.ProductBoughtEvent;
+import com.ubeyde.sample.event.PurchaseNotifyPeriodReachedEvent;
 import com.ubeyde.sample.event.VendingMachineEventPublisher;
-import com.ubeyde.sample.exception.InsufficientBalanceException;
-import com.ubeyde.sample.exception.ProductNotFoundException;
 import com.ubeyde.sample.repository.PurchaseRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PurchaseService {
 
+
+    private static final int PURCHASE_NOTIFY_PERIOD = 5;
+
     private static final Logger logger = LoggerFactory.getLogger(PurchaseService.class);
+
     private final ProductService productService;
     private final PurchaseRepository purchaseRepository;
     private final MachineService machineService;
@@ -29,44 +33,27 @@ public class PurchaseService {
         this.eventPublisher = eventPublisher;
     }
 
+    @EventListener
+    public void handleProductBoughtEvent(ProductBoughtEvent event) {
+        savePurchase(event.getProductId(),event.getAmountPaid());
+    }
+
+
     @Transactional
-    public Purchase processTransaction(Long productId) {
+    public void savePurchase(Long productId, Integer amountPaid) {
+
         Product product = productService.getProductById(productId);
 
-        Integer currentMachineBalance = machineService.getMachineBalance();
+        Purchase purchase = Purchase.builder()
+                .product(product)
+                .amount(amountPaid)
+                .build();
+        purchaseRepository.save(purchase);
 
-        if (product == null || product.getStockQuantity() <= 0) {
-            throw new ProductNotFoundException("Ürün stokta yok.");
+        //check the reached count and notify if period reached
+        long totalPurchases = purchaseRepository.count();
+        if (totalPurchases % PURCHASE_NOTIFY_PERIOD == 0 && totalPurchases != 0) {
+            eventPublisher.publishEvent(new PurchaseNotifyPeriodReachedEvent(totalPurchases));
         }
-
-        Integer price = product.getPrice();
-        if (currentMachineBalance-price < 0) {
-           throw new InsufficientBalanceException(Math.abs(currentMachineBalance-price));
-        }
-
-        try {
-            /*
-            purchase record will be saved and related event published for listeners
-             */
-            Purchase purchase = Purchase.builder()
-                    .product(product)
-                    .amount(price)
-                    .build();
-            Purchase savedPurchase = purchaseRepository.save(purchase);
-
-            eventPublisher.publishEvent((new ProductBoughtEvent(
-                    product.getId(),
-                    price
-            )));
-
-            logger.info("A purchase operation completed. Product: " + product.getName() + " price : "+ price);
-
-            return savedPurchase;
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-
     }
 }
