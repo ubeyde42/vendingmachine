@@ -15,7 +15,7 @@ Bu proje, **Vending Machine** (Satış Makinesi) sistemini modellemek için bir 
   - Yeni ürün ekleme
   - Ürün stoklarını güncelleme
 
-- **Olay Tabanlı Tasarım (Event-Driven Architecture)**
+- **Olay Tabanlı Tasarım (Event-Driven Architecture)****
   - Paranın yatırılması (`MoneyDepositedEvent`)
   - Ürün satın alma (`ProductPurchasedEvent`)
   - Geri ödeme talebi (`RefundRequestedEvent`)
