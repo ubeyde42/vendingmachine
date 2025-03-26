@@ -5,7 +5,6 @@ import com.ubeyde.sample.dto.DepositRequest;
 import com.ubeyde.sample.entity.Deposit;
 import com.ubeyde.sample.entity.Machine;
 import com.ubeyde.sample.entity.Product;
-import com.ubeyde.sample.entity.Purchase;
 import com.ubeyde.sample.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,16 +21,12 @@ import java.util.Map;
 @Tag(name = "Machine Operations", description = "Operations about purchase, machine info etc.")
 class MachineController {
 
-    private final PurchaseService transactionService;
     private final MachineService machineService;
-    private final ProductService productService;
     private final DepositService depositService;
     private final RefundService refundService;
 
-    public MachineController(PurchaseService transactionService, MachineService machineService, ProductService productService, DepositService depositService, RefundService refundService) {
-        this.transactionService = transactionService;
+    public MachineController(MachineService machineService, DepositService depositService, RefundService refundService) {
         this.machineService = machineService;
-        this.productService = productService;
         this.depositService = depositService;
         this.refundService = refundService;
     }
@@ -39,14 +34,14 @@ class MachineController {
     @GetMapping("/products")
     @Operation(summary = "Product List", description = "Lists the products available on the machine")
     public ResponseEntity<List<Product>> getProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+        return ResponseEntity.ok(machineService.getAllProducts());
     }
 
     @PostMapping("/purchase/{productId}")
     @Operation(summary = "Purchase Product", description = "Purchase product with product ID")
     public ResponseEntity<?> purchaseProduct(@PathVariable Long productId) {
-        Purchase purchase = transactionService.processTransaction(productId);
-        return ResponseEntity.ok(purchase);
+        machineService.purchaseProduct(productId);
+        return ResponseEntity.ok("purchased");
     }
 
     @PostMapping("/deposit")

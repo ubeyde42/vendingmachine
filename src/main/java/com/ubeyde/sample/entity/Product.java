@@ -32,4 +32,8 @@ public class Product {
         this.name = name;
         this.price = price;
     }
+
+    public void decreaseStock() {
+        this.setStockQuantity(this.getStockQuantity()-1);
+    }
 }
